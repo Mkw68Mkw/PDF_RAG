@@ -1,0 +1,3 @@
+#embeddings = BedrockEmbeddings(
+    #    credentials_profile_name="default", region_name="us-east-1"
+    #)
