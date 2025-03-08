@@ -5,6 +5,8 @@ from langchain_openai import ChatOpenAI
 from get_embedding_function import get_embedding_function
 import os
 from dotenv import load_dotenv
+from langchain.memory import ConversationBufferWindowMemory
+from langchain.chains import ConversationChain
 
 load_dotenv()
 CHROMA_PATH = "chroma"
@@ -26,6 +28,31 @@ Antworte im folgenden Format:
 - [Quellen-ID 2]
 """
 
+# Neue Conversation-Klasse hinzufügen
+class Conversation:
+    def __init__(self):
+        self.memory = ConversationBufferWindowMemory(k=3)  # Letzte 3 Nachrichten behalten
+        self.chain = ConversationChain(
+            llm=ChatOpenAI(
+                model="gpt-4o-mini",
+                api_key=os.environ.get("OPENAI_API_KEY")
+            ),
+            memory=self.memory
+        )
+    
+    def ask(self, question: str, context: str):
+        prompt = f"""
+        Kontext aus Dokumenten:
+        {context}
+        
+        Gesprächsverlauf:
+        {self.memory.load_memory_variables({})['history']}
+        
+        Neue Frage: {question}
+        Antwort (mit [Quellen-ID] Verweisen aus dem Kontext):
+        """
+        return self.chain.predict(input=prompt)
+
 
 def main():
     # Create CLI.
@@ -44,27 +71,14 @@ def query_rag(query_text: str):
     # Search the DB.
     results = db.similarity_search_with_score(query_text, k=5)
 
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-    prompt = prompt_template.format(context=context_text, question=query_text)
-    # print(prompt)
-
-    model = ChatOpenAI(
-        #model="gpt-4-turbo",
-        model="gpt-4o-mini",
-        api_key=os.environ.get("OPENAI_API_KEY")  # Same OpenAI key
-    )
-    response_text = model.invoke(prompt)
-
-    # Quellen aus Metadaten extrahieren
-    sources = [f"Dokument {doc.metadata['id']}" for doc, _score in results if "id" in doc.metadata]
+    # Conversation erstellen
+    conversation = Conversation()
     
-    # Formatierte Ausgabe
-    formatted_response = (
-        f"\n{response_text.content}\n\n"
-        f"📚 **Verwendete Quellen:**\n" + "\n".join(sources)
-    )
-    #print(formatted_response)
+    # Prompt mit Memory erstellen
+    context_text = "\n".join([f"[{doc.metadata['id']}] {doc.page_content}" for doc, _ in results])
+    response_text = conversation.ask(query_text, context_text)
+    
+    formatted_response = f"\n{response_text}\n"
     return formatted_response
 
 
