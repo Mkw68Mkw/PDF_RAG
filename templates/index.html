@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santia Lucia RAG Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -57,6 +59,7 @@
             border-radius: 8px;
             color: #333;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Standardmäßig ausblenden */
         }
 
         .response strong {
@@ -64,20 +67,85 @@
             display: block;
             margin-bottom: 10px;
         }
+
+        /* Ladeanimation */
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e42313;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <h1>Santia Lucia Fragemaschine</h1>
-    <form method="post">
-        <textarea name="question" placeholder="Stellen Sie hier Ihre Frage zur Speisekarte..."></textarea>
+    <form id="chat-form">
+        <textarea id="question" name="question" placeholder="Stellen Sie hier Ihre Frage zur Speisekarte..."></textarea>
         <br>
-        <button type="submit">Abschicken</button>
+        <button type="submit" id="submit-btn">Abschicken</button>
     </form>
 
-    {% if response %}
-    <div class="response">
-        {{ response|replace('\n', '<br>')|safe }}
+    <!-- Ladeanimation -->
+    <div class="loader" id="loading-spinner"></div>
+
+    <!-- Antwortbox -->
+    <div class="response" id="response-box">
+        <strong>Antwort:</strong>
+        <p id="response-text"></p>
     </div>
-    {% endif %}
+
+    <script>
+        document.getElementById("chat-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Verhindert das Neuladen der Seite
+            
+            let question = document.getElementById("question").value.trim();
+            let loader = document.getElementById("loading-spinner"); // Ladeanimation
+            let responseBox = document.getElementById("response-box");
+            let responseText = document.getElementById("response-text");
+            let submitBtn = document.getElementById("submit-btn");
+
+            if (question === "") return; // Falls das Feld leer ist, nichts tun
+
+            // Ladeanimation anzeigen und Antwort verstecken
+            loader.style.display = "block";
+            responseBox.style.display = "none";
+            submitBtn.disabled = true; // Button deaktivieren, um Doppelklicks zu verhindern
+
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "question=" + encodeURIComponent(question)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Ladeanimation ausblenden
+                loader.style.display = "none";
+
+                // Antwort anzeigen
+                responseText.innerHTML = data.response.replace(/\n/g, "<br>");
+                responseBox.style.display = "block";
+
+                // Eingabefeld leeren
+                document.getElementById("question").value = "";
+
+                // Button wieder aktivieren
+                submitBtn.disabled = false;
+            })
+            .catch(error => {
+                console.error("Fehler:", error);
+                loader.style.display = "none"; // Auch bei Fehlern Ladeanimation entfernen
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>

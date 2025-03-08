@@ -55,15 +55,21 @@ class Conversation:
 
 
 def main():
+    conversation = Conversation()
     # Create CLI.
-    parser = argparse.ArgumentParser()
-    parser.add_argument("query_text", type=str, help="The query text.")
-    args = parser.parse_args()
-    query_text = args.query_text
-    query_rag(query_text)
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("query_text", type=str, help="The query text.")
+    #args = parser.parse_args()
+    #query_text = args.query_text
+    
+    #query_rag(query_text, conversation=conversation)
+
+    while True:
+        user_input = input("You: ")
+        print(query_rag(user_input, conversation))
 
 
-def query_rag(query_text: str):
+def query_rag(query_text: str, conversation: Conversation):
     # Prepare the DB.
     embedding_function = get_embedding_function()
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
@@ -72,7 +78,6 @@ def query_rag(query_text: str):
     results = db.similarity_search_with_score(query_text, k=5)
 
     # Conversation erstellen
-    conversation = Conversation()
     
     # Prompt mit Memory erstellen
     context_text = "\n".join([f"[{doc.metadata['id']}] {doc.page_content}" for doc, _ in results])
@@ -84,3 +89,5 @@ def query_rag(query_text: str):
 
 if __name__ == "__main__":
     main()
+
+#session zur conversation adden
