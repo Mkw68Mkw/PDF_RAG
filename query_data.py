@@ -19,7 +19,6 @@ Beantworte die Frage auf Deutsch basierend nur auf diesem Kontext:
 Frage: {question}
 
 Antworte im folgenden Format:
-**Antwort:**
 [Deine Antwort hier. Halte dich streng an den Kontext.]
 
 **Quellen:**
@@ -62,10 +61,10 @@ def query_rag(query_text: str):
     
     # Formatierte Ausgabe
     formatted_response = (
-        f"🦙 **Antwort:**\n{response_text.content}\n\n"
+        f"\n{response_text.content}\n\n"
         f"📚 **Verwendete Quellen:**\n" + "\n".join(sources)
     )
-    print(formatted_response)
+    #print(formatted_response)
     return formatted_response
 
 

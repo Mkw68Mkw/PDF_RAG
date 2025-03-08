@@ -95,7 +95,7 @@ def calculate_chunk_ids(chunks):
         chunk_id = f"{current_page_id}:{current_chunk_index}"
         last_page_id = current_page_id
 
-        # Add it to the page meta-data.
+        # Add it to the chunk meta-data.
         chunk.metadata["id"] = chunk_id
 
     return chunks

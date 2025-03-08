@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Santia Lucia RAG Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            font-family: 'EB Garamond', garamond, serif;
+            color: #e42313;
+        }
+        
+        h1 {
+            color: #e42313;
+            text-align: center;
+            border-bottom: 2px solid #e42313;
+            padding-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e42313;
+            border-radius: 8px;
+            font-family: 'EB Garamond', garamond, serif;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #e42313;
+            color: #ffffff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'EB Garamond', garamond, serif;
+            font-size: 18px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c21a0d;
+        }
+
+        .response {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #ffffff;
+            border: 2px solid #e42313;
+            border-radius: 8px;
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .response strong {
+            color: #e42313;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Santia Lucia Fragemaschine</h1>
+    <form method="post">
+        <textarea name="question" placeholder="Stellen Sie hier Ihre Frage zur Speisekarte..."></textarea>
+        <br>
+        <button type="submit">Abschicken</button>
+    </form>
+
+    {% if response %}
+    <div class="response">
+        {{ response|replace('\n', '<br>')|safe }}
+    </div>
+    {% endif %}
+</body>
+</html>
