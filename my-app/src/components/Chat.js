@@ -1,6 +1,7 @@
 "use client"; // Falls du den Next.js App Router nutzt
 
 import React, { useState, useEffect, useRef } from "react";
+import config from "./config"; // Importiere die Konfiguration
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -9,7 +10,7 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const response = await fetch("http://localhost:5000/", {
+      const response = await fetch(`${config.apiUrl}/`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // Stellt sicher, dass Cookies mitgeschickt werden
@@ -38,7 +39,7 @@ const Chat = () => {
     setMessages([...messages, newMessage]);
 
     try {
-      const res = await fetch("http://localhost:5000/", {
+      const res = await fetch(`${config.apiUrl}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text }),
