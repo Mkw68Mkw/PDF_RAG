@@ -1,10 +1,11 @@
 "use client"; // Falls du den Next.js App Router nutzt
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [conversationId, setConversationId] = useState(null);
+  const messagesEndRef = useRef(null); // Referenz für das Ende der Nachrichten
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -26,6 +27,11 @@ const Chat = () => {
 
     fetchHistory();
   }, []); // Leeres Array sorgt dafür, dass der Effekt nur beim ersten Laden ausgeführt wird.
+
+  useEffect(() => {
+    // Scrollt zum Ende der Nachrichten, wenn sich die Nachrichten ändern
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); // Abhängigkeit von messages
 
   const sendMessage = async (text) => {
     const newMessage = { id: messages.length, text, sender: "User" };
@@ -57,6 +63,7 @@ const Chat = () => {
             </span>
           </div>
         ))}
+        <div ref={messagesEndRef} /> {/* Referenz für das Ende der Nachrichten */}
       </div>
       <input
         type="text"
