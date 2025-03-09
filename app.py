@@ -8,7 +8,9 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 
-app.config['SESSION_COOKIE_SECURE'] = True  
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  
 
 # Erlaubt Anfragen von überall und sendet Cookies
 CORS(app, resources={r"/*": {"origins": ["https://pdf-rag-olive.vercel.app", "http://localhost:3000"], "supports_credentials": True}})
@@ -30,13 +32,16 @@ def before_request():
         if conv_id not in conversation_store:
             session.pop('conversation_id', None)  # Lösche ungültige ID
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     """Haupt-Chat-Seite"""
     if 'conversation_id' not in session:
+        print("no conv_id")
         session['conversation_id'] = create_new_conversation()
     
     conv_id = session['conversation_id']
+    print(conv_id)
     conv = conversation_store[conv_id]
 
     if request.method == 'POST':
@@ -49,7 +54,6 @@ def index():
 
         # Speichere Frage & Antwort im Memory (Fix)
         conv.memory.save_context({"input": question}, {"output": response})
-
         return jsonify({"response": response})  # JSON statt HTML
 
     #return render_template('index.html')
@@ -60,7 +64,7 @@ def index():
     ] + [
         {"sender": "Bot", "message": msg["output"]} for msg in conv.memory.buffer
     ]
-
+    
     return jsonify({"history": conversation_history})
 
 if __name__ == '__main__':
