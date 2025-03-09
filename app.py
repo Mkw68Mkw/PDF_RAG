@@ -2,10 +2,14 @@ from flask import Flask, request, render_template, session, jsonify
 from query_data import query_rag, Conversation
 import os
 from datetime import timedelta
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+
+# Erlaubt Anfragen von überall und sendet Cookies
+CORS(app, resources={r"/*": {"origins": "*", "supports_credentials": True}})
 
 # Speichert aktive Konversationen
 conversation_store = {}
@@ -34,7 +38,11 @@ def index():
     conv = conversation_store[conv_id]
 
     if request.method == 'POST':
-        question = request.form['question']
+        #question = request.form['question']
+        data = request.get_json()
+        print(data)
+        question = data.get("question", "")
+
         response = query_rag(question, conv)
 
         # Speichere Frage & Antwort im Memory (Fix)
@@ -42,7 +50,16 @@ def index():
 
         return jsonify({"response": response})  # JSON statt HTML
 
-    return render_template('index.html')
+    #return render_template('index.html')
+
+    # GET Anfrage: Lade die gesamte Konversation
+    conversation_history = [
+        {"sender": "User", "message": msg["input"]} for msg in conv.memory.buffer
+    ] + [
+        {"sender": "Bot", "message": msg["output"]} for msg in conv.memory.buffer
+    ]
+
+    return jsonify({"history": conversation_history})
 
 if __name__ == '__main__':
     from waitress import serve
