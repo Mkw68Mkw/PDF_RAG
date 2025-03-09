@@ -9,7 +9,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 
 # Erlaubt Anfragen von überall und sendet Cookies
-CORS(app, resources={r"/*": {"origins": "*", "supports_credentials": True}})
+CORS(app, resources={r"/*": {"origins": ["https://pdf-rag-olive.vercel.app", "http://localhost:3000"], "supports_credentials": True}})
 
 # Speichert aktive Konversationen
 conversation_store = {}
