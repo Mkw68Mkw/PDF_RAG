@@ -1,7 +1,7 @@
 "use client"; // Falls du den Next.js App Router nutzt
 
 import React, { useState, useEffect, useRef } from "react";
-import config from "./config"; // Importiere die Konfiguration
+import config from "../../config"; // Importiere die Konfiguration
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -15,6 +15,7 @@ const Chat = () => {
         headers: { "Content-Type": "application/json" },
         credentials: "include", // Stellt sicher, dass Cookies mitgeschickt werden
       });
+      console.log("Current environment:", process.env.NODE_ENV);
 
       const data = await response.json();
       if (data.history) {
