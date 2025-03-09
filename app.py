@@ -8,6 +8,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 
+app.config['SESSION_COOKIE_SECURE'] = True  
+
 # Erlaubt Anfragen von überall und sendet Cookies
 CORS(app, resources={r"/*": {"origins": ["https://pdf-rag-olive.vercel.app", "http://localhost:3000"], "supports_credentials": True}})
 
