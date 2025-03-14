@@ -3,6 +3,7 @@ from query_data import query_rag, Conversation
 import os
 from datetime import timedelta
 from flask_cors import CORS
+import time  # Importiere das time-Modul
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
@@ -45,18 +46,20 @@ def index():
     conv = conversation_store[conv_id]
 
     if request.method == 'POST':
-        #question = request.form['question']
         data = request.get_json()
         print(data)
         question = data.get("question", "")
 
+        start_time = time.time()  # Zeit vor dem Aufruf erfassen
         response = query_rag(question, conv)
+        end_time = time.time()  # Zeit nach dem Aufruf erfassen
 
-        # Speichere Frage & Antwort im Memory (Fix)
+        response_time = end_time - start_time  # Berechne die Antwortzeit
+        print(f"Response time: {response_time:.2f} seconds")  # Ausgabe der Antwortzeit
+
+        # Speichere Frage & Antwort im Memory
         conv.memory.save_context({"input": question}, {"output": response})
         return jsonify({"response": response})  # JSON statt HTML
-
-    #return render_template('index.html')
 
     # GET Anfrage: Lade die gesamte Konversation
     conversation_history = [

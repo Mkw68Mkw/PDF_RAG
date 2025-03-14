@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.chains import ConversationChain
+import time  # Importiere das time-Modul
 
 load_dotenv()
 CHROMA_PATH = "chroma"
@@ -41,6 +42,7 @@ class Conversation:
         )
     
     def ask(self, question: str, context: str):
+        start_time = time.time()  # Zeit vor dem Aufruf erfassen
         prompt = f"""
         Kontext aus Dokumenten:
         {context}
@@ -51,7 +53,13 @@ class Conversation:
         Neue Frage: {question}
         Antwort (mit [Quellen-ID] Verweisen aus dem Kontext):
         """
-        return self.chain.predict(input=prompt)
+        response = self.chain.predict(input=prompt)
+        end_time = time.time()  # Zeit nach dem Aufruf erfassen
+
+        response_time = end_time - start_time  # Berechne die Antwortzeit
+        print(f"LLM response time: {response_time:.2f} seconds")  # Ausgabe der Antwortzeit
+
+        return response
 
 
 def main():
