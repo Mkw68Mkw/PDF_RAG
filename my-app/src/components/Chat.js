@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import config from "../../config"; // Importiere die Konfiguration
 import { FaUser, FaRobot, FaRegCommentDots } from "react-icons/fa";
 import { ImSpinner8 } from "react-icons/im";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -93,7 +95,16 @@ const Chat = () => {
                 ? "bg-red-500 text-white ml-auto" 
                 : "bg-white shadow-md"
             }`}>
-              <p className="text-sm">{msg.text}</p>
+              <div className="prose prose-sm max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({node, ...props}) => <a {...props} className="text-red-500 hover:text-red-700" target="_blank" rel="noreferrer" />
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+              </div>
               <div className="mt-1 text-xs opacity-70">{msg.timestamp}</div>
             </div>
 
