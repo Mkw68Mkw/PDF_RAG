@@ -12,19 +12,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Santia Lucia - Restaurant Chat",
-  description: "Chat für das Restaurant Santia Lucia",
+  title: "AlDente AI - Restaurant Chat",
+  description: "Chat für Italienisches Restaurant",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="de">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-red-600 to-red-400`}>
-        <header className="bg-red-900/90 backdrop-blur-lg py-6 shadow-2xl border-b border-red-800">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}>
+        <header className="bg-red-600 py-6 shadow-2xl ">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-4xl font-bold text-center text-white font-serif tracking-tight">
               <span className="inline-block mr-3">🍕</span>
-              Santia Lucia
+              AlDente AI
               <span className="inline-block ml-3">🍷</span>
             </h1>
             <p className="text-center mt-2 text-red-100 text-lg">Traditionelle italienische Küche</p>
@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
           {children}
         </main>
         
-        <footer className="bg-red-900/90 backdrop-blur-lg mt-12 py-6 border-t border-red-800">
+        <footer className="bg-red-600 py-6">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <div className="flex justify-center space-x-6 mb-4">
               <a href="#" className="text-red-100 hover:text-white transition-colors">Impressum</a>
@@ -43,8 +43,8 @@ export default function RootLayout({ children }) {
               <a href="#" className="text-red-100 hover:text-white transition-colors">Kontakt</a>
             </div>
             <p className="text-red-100 text-sm">
-              &copy; {new Date().getFullYear()} Santia Lucia. 
-              <span className="block sm:inline">Alle Rechte vorbehalten</span>
+              &copy; {new Date().getFullYear()} Kevin Wu. 
+              <span className="block sm:inline"> Alle Rechte vorbehalten</span>
             </p>
           </div>
         </footer>

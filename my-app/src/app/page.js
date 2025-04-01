@@ -1,23 +1,11 @@
-import Chat from "@/components/Chat";
+import Chat from "@/my_components/Chat";
 import { FaComments, FaPizzaSlice } from 'react-icons/fa';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-500 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
-      {/* Header Section */}
-      <div className="text-center mb-8 space-y-3 animate-fade-in">
-        <div className="flex items-center justify-center gap-3">
-          <FaPizzaSlice className="text-4xl text-red-100 animate-bounce-slow" />
-          <h1 className="text-4xl font-bold text-white font-serif tracking-tight drop-shadow-lg">
-            Santia Lucia
-          </h1>
-          <FaPizzaSlice className="text-4xl text-red-100 animate-bounce-slow delay-100" />
-        </div>
-        <p className="text-red-100/90 text-lg mt-2">Traditionelle italienische Küche</p>
-      </div>
-
+    <div className="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
       {/* Chat Container */}
-      <div className="w-full max-w-3xl bg-white/15 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/25">
+      <div className="w-full max-w-3xl bg-red-600 rounded-3xl shadow-2xl border border-white/25">
         {/* Chat Header */}
         <div className="bg-white/20 p-5 border-b border-white/25">
           <div className="flex items-center gap-3.5">
@@ -50,7 +38,7 @@ export default function Home() {
 
       {/* Floating CTA */}
       <div className="mt-8 animate-float">
-        <div className="bg-white/20 px-5 py-2.5 rounded-full backdrop-blur-sm border border-white/25">
+        <div className="bg-red-600 px-5 py-2.5 rounded-full backdrop-blur-sm border border-white/25">
           <span className="text-red-100 text-sm flex items-center gap-2">
             <span className="animate-wiggle">👋</span>
             Wir antworten innerhalb von 2 Minuten!
